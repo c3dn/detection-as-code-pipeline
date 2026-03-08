@@ -1,0 +1,9 @@
+rule_dirs:
+  - rules
+
+files:
+  stack_schema_map: etc/stack-schema-map.yaml
+  test_config: etc/test_config.yaml
+
+# Version lock not used -- versioning is handled by Git
+bypass_version_lock: true

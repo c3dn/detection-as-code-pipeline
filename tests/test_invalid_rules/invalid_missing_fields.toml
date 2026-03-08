@@ -1,0 +1,7 @@
+# Invalid rule: missing required fields for error handling test
+[metadata]
+creation_date = "2024/01/01"
+
+[rule]
+name = "Incomplete Rule"
+# Missing: rule_id, description, risk_score, severity, type, query, tags

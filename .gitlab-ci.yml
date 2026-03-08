@@ -1,0 +1,98 @@
+stages:
+  - validate
+  - test
+  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip-cache"
+
+# ── Stage 1: Schema & Syntax Validation ─────────────────────
+validate-rules:
+  stage: validate
+  image: python:3.12-slim
+  before_script:
+    - pip install -q -r requirements.txt
+  script:
+    - echo "=== Validating rule syntax and schema ==="
+    - python scripts/validate_rules.py
+  rules:
+    - changes:
+        - "rules/**/*"
+        - "scripts/validate_rules.py"
+      when: always
+    - when: always
+
+# ── Stage 1b: Duplicate Check ───────────────────────────────
+check-duplicates:
+  stage: validate
+  image: python:3.12-slim
+  before_script:
+    - pip install -q -r requirements.txt
+  script:
+    - echo "=== Checking for duplicate rule IDs and names ==="
+    - python scripts/check_duplicates.py
+  rules:
+    - changes:
+        - "rules/**/*"
+      when: always
+    - when: always
+
+# ── Stage 2: Unit Tests ─────────────────────────────────────
+unit-tests:
+  stage: test
+  image: python:3.12-slim
+  before_script:
+    - pip install -q -r requirements.txt
+  script:
+    - echo "=== Running unit tests ==="
+    - python -m pytest tests/ -v --tb=short --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+  rules:
+    - changes:
+        - "rules/**/*"
+        - "tests/**/*"
+        - "scripts/**/*"
+      when: always
+    - when: always
+
+# ── Stage 3a: Deploy to Dev Space ───────────────────────────
+# Runs automatically after tests pass.
+deploy-dev:
+  stage: deploy
+  image: python:3.12-slim
+  variables:
+    KIBANA_SPACE: "dev"
+  before_script:
+    - pip install -q -r requirements.txt
+  script:
+    - echo "=== Deploying rules to Kibana [Dev] space ==="
+    - python scripts/deploy_rules.py
+  environment:
+    name: dev
+    url: "${KIBANA_URL}/s/dev/app/security/rules/management"
+  rules:
+    - when: on_success
+  allow_failure: true
+
+# ── Stage 3b: Deploy to Prod Space (manual, main only) ──────
+# Requires manual approval. Only available on the main branch.
+deploy-prod:
+  stage: deploy
+  image: python:3.12-slim
+  variables:
+    KIBANA_SPACE: "prod"
+  before_script:
+    - pip install -q -r requirements.txt
+  script:
+    - echo "=== Deploying rules to Kibana [Prod] space ==="
+    - python scripts/deploy_rules.py
+  environment:
+    name: production
+    url: "${KIBANA_URL}/s/prod/app/security/rules/management"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  allow_failure: false

@@ -1,0 +1,42 @@
+[metadata]
+creation_date = "2024/03/10"
+updated_date = "2024/09/01"
+maturity = "production"
+min_stack_version = "9.3.1"
+
+[rule]
+name = "Potential Reverse Shell via Netcat"
+rule_id = "b2c3d4e5-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
+description = """
+Detects the execution of netcat or ncat with flags commonly used to establish
+a reverse shell connection to a remote host.
+"""
+risk_score = 47
+severity = "medium"
+type = "eql"
+tags = ["Linux", "Execution", "T1059", "T1059.004", "Elastic", "Reverse Shell"]
+
+query = '''
+process where event.type == "start" and
+  process.name : ("nc", "ncat", "netcat") and
+  process.args : ("-e", "-c") and
+  process.args : ("/bin/sh", "/bin/bash", "cmd.exe")
+'''
+
+[[rule.threat]]
+framework = "MITRE ATT&CK"
+
+  [rule.threat.tactic]
+  id = "TA0002"
+  name = "Execution"
+  reference = "https://attack.mitre.org/tactics/TA0002/"
+
+  [[rule.threat.technique]]
+  id = "T1059"
+  name = "Command and Scripting Interpreter"
+  reference = "https://attack.mitre.org/techniques/T1059/"
+
+    [[rule.threat.technique.subtechnique]]
+    id = "T1059.004"
+    name = "Unix Shell"
+    reference = "https://attack.mitre.org/techniques/T1059/004/"

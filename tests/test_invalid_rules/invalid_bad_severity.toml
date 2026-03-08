@@ -1,0 +1,22 @@
+[metadata]
+creation_date = "2024/01/01"
+updated_date = "2024/01/01"
+maturity = "production"
+min_stack_version = "9.3.1"
+
+[rule]
+name = "Bad Severity Rule"
+rule_id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+description = "This rule has an invalid severity value."
+risk_score = 50
+severity = "ULTRA_CRITICAL"
+type = "query"
+query = "process.name : bad_process"
+tags = ["Test"]
+
+[[rule.threat]]
+framework = "MITRE ATT&CK"
+
+  [rule.threat.tactic]
+  id = "TA0001"
+  name = "Initial Access"

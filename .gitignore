@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.pip-cache/
+*.egg-info/
+dist/
+build/
+.env
+report.xml
+.pytest_cache/
+.claude/

@@ -1,0 +1,51 @@
+# ┌─────────────────────────────────────────────────────────────┐
+# │  EXAMPLE RULE -- Copy this file to create a new rule.      │
+# │  Rename to: your_rule_name.toml (lowercase, underscores)   │
+# │  Delete this file when you no longer need it.               │
+# └─────────────────────────────────────────────────────────────┘
+
+[metadata]
+creation_date = "2024/01/01"
+updated_date = "2024/01/01"
+maturity = "development"           # development | experimental | beta | production | deprecated
+min_stack_version = "9.3.1"        # Must match a version in etc/stack-schema-map.yaml
+
+[rule]
+name = "My Custom Detection Rule"
+rule_id = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"   # Generate a unique UUID
+description = """
+Describe what this rule detects, why it matters, and what an analyst should
+investigate when this rule fires.
+"""
+
+# Severity and risk_score must be consistent:
+#   low      = 0-21
+#   medium   = 22-47
+#   high     = 48-73
+#   critical = 74-100
+risk_score = 47
+severity = "medium"
+
+# Rule type: query | eql | threshold | machine_learning | threat_match | new_terms | esql
+type = "query"
+
+tags = ["OS", "Tactic", "Technique ID", "Elastic"]
+
+# KQL query for type = "query", EQL for type = "eql"
+query = '''
+process.name : "suspicious_binary" and event.action : "exec"
+'''
+
+# MITRE ATT&CK mapping -- at least one tactic + technique required
+[[rule.threat]]
+framework = "MITRE ATT&CK"
+
+  [rule.threat.tactic]
+  id = "TA0002"
+  name = "Execution"
+  reference = "https://attack.mitre.org/tactics/TA0002/"
+
+  [[rule.threat.technique]]
+  id = "T1059"
+  name = "Command and Scripting Interpreter"
+  reference = "https://attack.mitre.org/techniques/T1059/"

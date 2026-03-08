@@ -1,0 +1,2 @@
+skips:
+  - tests.test_all_rules.TestRuleFiles.test_rule_file_name_tactic

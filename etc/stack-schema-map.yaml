@@ -1,0 +1,21 @@
+# Add your Elastic Stack version(s) here.
+# Rules reference these via metadata.min_stack_version.
+"8.0.0":
+  beats: {}
+  ecs: {}
+  endgame: {}
+
+"8.17.0":
+  beats: {}
+  ecs: {}
+  endgame: {}
+
+"9.0.0":
+  beats: {}
+  ecs: {}
+  endgame: {}
+
+"9.3.1":
+  beats: {}
+  ecs: {}
+  endgame: {}

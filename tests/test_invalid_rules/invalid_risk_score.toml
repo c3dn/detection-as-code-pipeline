@@ -1,0 +1,22 @@
+[metadata]
+creation_date = "2024/01/01"
+updated_date = "2024/01/01"
+maturity = "production"
+min_stack_version = "9.3.1"
+
+[rule]
+name = "Bad Risk Score Rule"
+rule_id = "11111111-2222-3333-4444-555555555555"
+description = "This rule has a risk score out of range."
+risk_score = 150
+severity = "high"
+type = "eql"
+query = "process where process.name == 'evil.exe'"
+tags = ["Test"]
+
+[[rule.threat]]
+framework = "MITRE ATT&CK"
+
+  [rule.threat.tactic]
+  id = "TA0001"
+  name = "Initial Access"
